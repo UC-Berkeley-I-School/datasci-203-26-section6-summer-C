@@ -1,38 +1,88 @@
-# lab_2
+# Lab 2: Socioeconomic Factors and School Test Scores
 
-The final project for MIDS w203. In this lab, students will apply what they have learned about building linear models to produce a report that analyzes a specific research question. 
+DATASCI 203 — Description Using Models
 
-# Assignment Prompt
+## Team
 
-The assignment prompt is in `./prompt/assignment.qmd` and rendered in `./prompt/assignment.pdf`. 
+| Name | 
+|---|
+| Mohammed Abdalla |
+| Miriam Luka | 
+| Jayant Kumar | 
+| Kashif Awan |
 
-# Project Organization
 
-We have created a folder structure to help you organize your work. This is based on [cookiecutter data science](https://drivendata.github.io/cookiecutter-data-science).
+## Research Question
+
+Which socioeconomic factors contribute most heavily to district-level state test scores?
+
+**Hypothesis:** Higher median income and % of adults with a bachelor's degree or higher, and
+lower unemployment, poverty, SNAP receipt, and % single mothers, are associated with higher
+test scores. We expect `baplusavgall` (% bachelor's+) and `povertyavgall` (poverty rate) to have
+the largest coefficients.
+
+**Framing:** we're writing as consultants to advise policymakers on which are the biggest drivers of state test scores
+
+## Data
+
+- **Source:** [Stanford Education Data Archive (SEDA) v6.0](https://edopportunity.org/opportunity/data/downloads/#documentation-6)
+- **Files:** `seda_geodist_annual_cs_6.0` (district achievement) joined to
+  `seda_cov_geodist_annual_6.0` (district covariates) on district ID, filtered to year 2018,
+  "all students" aggregate only.
+- **Unit of observation:** one U.S. public school district (~13,000 rows before sampling).
+- **Y:** `cs_mn_avg_ol` — standardized math/reading test score effect size vs. national average.
+- **X candidates:** `lninc50avgall` (log median income), `baplusavgall` (% bachelor's+),
+  `povertyavgall` (% poverty), `unempavgall` (unemployment rate), `snapavgall` (% SNAP),
+  `single_momavgall` (% single mothers).
+- **Open sampling question:** districts in the same state/region aren't independent, so we need
+  a sampling plan (e.g., one district per state cluster, or state fixed effects) before we can
+  credibly claim i.i.d. — this is a first-order task, not an afterthought.
 
 
-    ├── LICENSE
-    ├── README.md          <- The top-level README describing the project aims
-    ├── data
-    │   ├── external       <- Data from third party sources.
-    │   ├── interim        <- Intermediate data that has been transformed.
-    │   └── processed      <- The final, canonical data sets for modeling.
-    ├── prompt             <- The assignment prompt.
-    ├── peer_review        <- A starting place for each person's peer evaluation. 
-    ├── notebooks          <- .Rmd notebooks. 
-    ├── references         <- Data dictionaries, manuals, and all other explanatory materials.
-    ├── reports            <- Generated analysis as HTML, PDF, LaTeX, etc.
-    └── src                <- Source code for use in this project.
-        └── data           <- Scripts to download or generate data
+## Roadmap
 
-## How we would use this structure. 
+Update the dates below once we agree on the actual due date; phases are ordered so each
+depends on the one before it.
 
-1. At the beginning of your assignment, you and your team are going to be working on several things, all at the same time. You're going to be exploring data, asking questions, and learning about what is going on. All of this work is nicely contained in the `./notebooks/` section of folder. `./notebooks`, when it is included on the `main` branch of the repository should be more than just your first, very messy look at some question -- you should have brought it at least to the point that others can follow your logic and potentially contribute to your code. 
+| Phase | Owner | Deliverable | Status |
+|---|---|---|---|
+| 1. Data wrangling & split | Mohammed | Cleaned joined dataset; exploration/confirmation split saved to `data/` | ☐ |
+| 2. Sampling plan for independence | Kashif | Written justification for how we handle state-level clustering (subsample vs. fixed effects) | ☐ |
+| 3. Exploratory analysis | Jayant | Univariate/bivariate plots on exploration set; NA and outlier decisions documented | ☐ |
+| 4. Model 1 (simplest credible model) | Miriam? | Single-predictor regression, e.g. `cs_mn_avg_ol ~ povertyavgall` | ☐ |
+| 5. Model 2+ (fuller story) | Miriam? | Additional predictors, transformations, interactions on exploration set | ☐ |
+| 6. Assumptions check | Kashif | CLM/large-sample assumptions assessed for final spec | ☐ |
+| 7. Draft report | Mo (Intro, operation), Kash (data), Jay (viz), model (Miriam) | Intro, data, operationalization, viz, model table (stargazer) | ☐ |
+| 8. Swap to confirmation set | All | Re-run final model(s) + all report numbers on `data/confirmation/` | ☐ |
+| 9. Appendix | All | Data link, list of specs tried + what we learned, residuals-vs-fitted plot | ☐ |
+| 10. Polish & last minute Edits  | Mohammed | 4-page main report + 1-page appendix, proofread, all plots discussed in prose | ☐ |
 
-2. In the `./data/` folder and its sub-folders go all the data that you're going to use or derive for use in this project. We have added any `.csv` file in this folder structure to the `.gitignore` file, which means that they will not be stored in version control. This is a best practice, because version control should really be about storing code and not data. 
+Assign owners by editing the table above (one person can own multiple phases, but every phase
+needs a name so nothing falls through the cracks).
 
-3. We have built this around a "Project" in Rstudio. These projects allow you to isolate all of your code, but also much of your environment to that specific project. To manage the environment, we have used the `renv` package, and to give you a starting point, we have installed many of the packages that you might be interested in using: `tidyverse` (which includes `dplyr` and `ggplot2`), `here` for locating your data (more on that in a moment), `data.table` if you've got GB of data, but also packages like `sandwich` and `lmtest` which we have used earlier in the semeseter. In order for _you_ to install these packages on the computer you're using, you will simply need to issue `renv::restore()` once, and these will install. 
+## Grading Rubric Checklist
 
-4. We recommend that you use the `here` package [link](https://here.r-lib.org) for all of your file paths. Here is why: You're working on a team of 3-4 people, and each of you have different locations where you're working on your computer. This is very frustrating to collaborate, and it leads to just enough friction that you  won't end up actually collaborating. `here` starts from the top-level of the project, but no deeper, and then creates conforming file paths. If you were looking to reference your raw data, in any file, you would do so by issuing `here("data", "raw", "my_data.csv")` where `"my_data.csv"` is actually the name of the file that you're trying to load. 
+Self-check against the instructor's 9 criteria before submitting:
 
-5. We would recommend that you write a small service to yourselves -- perhaps storing this in `./src/` that takes on each step of your data gathering and cleaning pipeline. It is really, really nice to be able to interactively work with data while you're modeling. However, as your project develops, we would _strongly_ recommend that you move this work to clean and transform your data to as early as possible, and certainly before you move into your `Report.Rmd` file. Here's why: (a) As a team, you need to know what the canonical form of "this variable" is; you can't have two competing versions; (b) As a contributor, you want to know what is available to you, and what you've got to derive anew -- if there are no new variable derivations in the modeling code, then you know that any new thing you create has to get moved into a new place at some point; (c) as a contributor, the modeling gets _wild_ every. single. time. You want to isolate the hard work that you're doing to read people's modeling code from the sometimes unclear work of the variable transforms. 
+- [ ] **Introduction** — makes the case for the topic from sentence one; no part of the RQ feels arbitrary
+- [ ] **Data source description** — provenance, collection method, unit of observation, relevant caveats
+- [ ] **Data wrangling** — clean pipeline from raw → analysis data, wrangling code separated into scripts/functions, single source of truth
+- [ ] **Operationalization** — concepts justified, alternatives discussed, count + reason for any dropped observations
+- [ ] **Data visualization** — at least one plot of Y vs. X with final model predictions overlaid; plain-English labels; every plot discussed in prose
+- [ ] **Model specification** — transformations justified, ordinal vars not treated as metric, stargazer table, correct SEs
+- [ ] **Model assumptions** — CLM assumptions assessed fairly (no overclaiming), consequences of violations discussed
+- [ ] **Results & interpretation** — statistical *and* practical significance, magnitude in context, hypothetical data points
+- [ ] **Overall professionalism** — report is submission-ready, readable by a fellow student standalone
+
+## Page Limits
+
+- Main report: **4 pages**
+- Appendix: **1 page**
+- Format: `.Rmd` → `pdf_document`
+
+## Git Workflow
+
+- Branch per person/feature: `wrangling-mohammed`, `eda-miriam`, `model-jayant`, `writeup-kashif`, etc.
+- Open a PR into `main` before merging; one other teammate reviews.
+- Never commit raw data or knitted `.pdf`/`.html` output — keep those in `.gitignore`.
+- Squash-merge to keep history readable.
