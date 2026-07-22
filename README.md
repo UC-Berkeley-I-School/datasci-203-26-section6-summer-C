@@ -1,6 +1,6 @@
 # Lab 2: Socioeconomic Factors and School Test Scores
 
-DATASCI 203 — Description Using Models
+DATASCI 203 - Description Using Models
 
 ## Team
 
@@ -79,6 +79,8 @@ Self-check against the instructor's 9 criteria before submitting:
 - Main report: **4 pages**
 - Appendix: **1 page**
 - Format: `.Rmd` → `pdf_document`
+
+## NOTE: Strictly this README file itself has utilized GenAI mainly to help convert our text to a clean markdown format, we will not utilize GenAI in the actual output/report that is submitted, this was used strictly for format and to help us quickly visualize responsibilities
 
 ## Git Workflow
 
